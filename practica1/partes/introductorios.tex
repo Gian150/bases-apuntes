@@ -1,0 +1,1030 @@
+\section{Ejercicios introductorios}
+
+\subsection{}
+
+\begin{center}
+\textbf{DER}
+
+\vspace*{1cm}
+
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]
+		
+		%% Entidades y relaciones
+		\node[entity]			(cliente) 							{Cliente};
+		\node[relationship] 	(tiene) 	[right=of cliente] 		{tiene};
+		\node[entity]			(vehiculo)	[right=of tiene]		{Vehiculo};
+		\node[relationship] 	(registra) 	[right=of vehiculo] 	{registra};
+		\node[entity]			(accidente)	[right=of registra]		{Accidente};
+		\node[relationship]		(cubre)		[above=of vehiculo] 	{cubre};
+		\node[entity]			(poliza)	[above=of cubre]		{Poliza};
+		\node[relationship]		(asociadaA)	[left =of poliza]		{asociada a};
+		\node[entity]			(prima)		[left =of asociadaA]	{Prima};
+		\node[weak relationship](paga)		[left =of prima]		{paga};
+		\node[weak entity]		(pago)		[left =of paga]			{Pago};
+		
+		
+		%%Atributos de Accidente
+		\node[attributePK]		(accidenteIdAccidente)		[below=of accidente]				{\PK{idAccidente}};
+		
+		%%Atributos de Cliente
+		\node[attributePK]		(clienteIdCliente)			[left=of cliente]					{\PK{idCliente}};
+				
+		%%Atributos de Pago
+		\node[attributePK]		(pagoIdPago)				[left=of pago]						{\PK{idPago}};
+		\node[attribute]		(pagoRecepcion)				[below=of pago]						{fechaRecepcion};
+		
+		%%Atributos de Poliza
+		\node[attributePK]		(polizaIdPoliza)			[right=of poliza]					{\PK{idPoliza}};
+		
+		%%Atributos de Prima
+		\node[attribute]		(primaValidaDesde)			[above=of prima] 					{validaDesde};
+		\node[attributePK]		(primaIdPrima)				[left=of primaValidaDesde] 			{\PK{idPrima}};
+		\node[attribute]		(primaVencimiento)			[right=of primaValidaDesde] 		{vencimiento};
+		
+		%%Atributos de Vehiculo
+		\node[attributePK]		(vehiculoIdVehiculo)		[below=of vehiculo]					{\PK{idVehiculo}};
+		
+		
+		%% Ejes de participación completa
+		\path
+			%% Ejes atributos Accidente
+			(accidente)	edge	(accidenteIdAccidente)
+
+			%% Ejes atributos Cliente
+			(cliente)	edge	(clienteIdCliente)
+		
+			%% Ejes atributos Pago
+			(pago)		edge	(pagoIdPago)
+			(pago)		edge	(pagoRecepcion)	
+			
+			%% Ejes atributos Poliza
+			(poliza)	edge	(polizaIdPoliza)
+			
+			%% Ejes atributos Prima
+			(prima)		edge 	(primaIdPrima)
+			(prima) 	edge	(primaValidaDesde)
+			(prima) 	edge	(primaVencimiento)
+			
+			%% Ejes atributos Vehiculo
+			(vehiculo)	edge	(vehiculoIdVehiculo)
+				
+			%% Ejes relacion tiene
+			(tiene)					edge	node[above, near end]	{1}	(cliente)
+			(tiene)					edge	node[above, near end]	{N}	(vehiculo)
+			
+			%% Ejes relacion cubre
+			(cubre)					edge	node[left, near end] 	{1} (poliza)
+			(cubre)					edge 	node[left, near end]	{N} (vehiculo)
+			
+			% Ejes relacion paga
+			(paga)					edge	node[above, near end]	{1} (prima)
+			(paga)					edge	node[above, near end]	{N}	(pago)
+
+			%% Ejes realacion asociada a
+			(asociadaA)				edge 	node[above, near end]	{1} (poliza)
+			(asociadaA)				edge 	node[above, near end]	{N}	(prima)
+			
+			%% Ejes relacion registra)
+			(registra) 				edge 	node[above, near end]	{N}	(accidente)	
+		;
+	
+		%% Ejes de participación parcial
+		\path[rightOptional]
+			%% Ejes relación Registra
+			(registra)	edge node[above, near end]	{1}	(vehiculo)
+		;
+		\end{tikzpicture}
+}
+
+\vspace*{1cm}
+
+\textbf{MER}
+
+\vspace*{1cm}
+
+\begin{minipage}{0.65\textwidth}
+
+	\begin{multicols}{2}
+		Cliente		(\PK{idCliente})
+	
+		Vehiculo	(\PK{idVehiculo}, \FK{idCliente}, \FK{idPoliza})
+		
+		Accidente	(\PK{idAccidente}, \FK{idVehiculo})
+		
+		Poliza		(\PK{idPoliza})
+		
+		Prima		(\PK{idPrima}, validaDesde, vencimiento, \FK{idPoliza})
+
+		Pago		(\PK{idPago}, \FPK{idPrima}, fechaRecepcion, cantidad)
+	\end{multicols}
+\end{minipage}
+\end{center}
+
+\newpage
+\subsection{}
+
+\begin{center}
+\textbf{DER}
+
+\vspace*{1cm}
+
+\scalebox{1}{
+	\begin{tikzpicture}[.style={DER}]
+	
+	%% Entidades y relaciones
+	\node[entity]			(cliente) 										{Cliente};
+	\node[relationship] 	(compro)			[right=of cliente] 			{compró};
+	\node[entity]			(producto)			[right=of compro]			{Producto};
+	\node[relationship] 	(suministradoPor)	[right=of producto] 		{suministrado \\ por};
+	\node[entity]			(proovedor)			[right=of suministradoPor]	{Proovedor};
+	
+	%%Atributos de Cliente
+	\node[attribute]	(clienteApellido)			[left=of cliente]					{apellido};
+	\node[attribute]	(clienteNombre)				[above=of clienteApellido]			{nombre};
+	\node[attributePK]	(clienteDni)			 	[above right=of clienteNombre]		{\PK{dni}};
+	\node[attribute]	(clienteDireccion)		 	[below=of clienteApellido]			{direccion};
+	\node[attribute]	(clienteFechaNacimiento)	[below right=of clienteDireccion] 	{fechaNacimiento};
+	
+	%%Atributos Producto
+	\node[]				(productoI)					[above=of producto] 				{};  %% Auxiliar
+	\node[attribute]	(productoNombre)			[above=of productoI]				{nombre};
+	\node[attributePK]	(productoCodigo)			[left=of productoNombre]			{\PK{codigo}};
+	\node[attribute]	(productoPrecio)			[right=of productoNombre]			{precio};
+	
+	%%Atributos Proovedor
+	\node[attribute]	(proovedorNombre)			[right=of proovedor]				{nombre};
+	\node[attributePK]	(proovedorCuit)				[above=of proovedorNombre]			{\PK{cuit}};
+	\node[attribute]	(proovedorDireccion)		[below=of proovedorNombre]			{direccion};
+	
+	%% Ejes de participación completa
+	\path
+	%% Ejes atributos Cliente	
+	(cliente)	edge	(clienteDni)
+	(cliente)	edge	(clienteNombre)
+	(cliente)	edge	(clienteApellido)
+	(cliente)	edge	(clienteDireccion)
+	(cliente)	edge	(clienteFechaNacimiento)
+	
+	%% Ejes atributos Producto
+	(producto)	edge	(productoCodigo)
+	(producto)	edge	(productoNombre)
+	(producto)	edge	(productoPrecio)	
+	
+	%% Ejes atributos Proovdor
+	(proovedor)	edge	(proovedorCuit)
+	(proovedor)	edge	(proovedorNombre)
+	(proovedor)	edge	(proovedorDireccion)	
+
+	%% Ejes relacion tiene
+	(compro)	edge			node[above, near end]	{N}	(cliente)
+	(compro)	edge			node[above, near end]	{M}	(producto)
+	
+	%% Ejes relacion suministrado por
+	(suministradoPor)	edge	node[above, near end]	{N}	(producto)
+	(suministradoPor)	edge	node[above, near end]	{1}	(proovedor)
+	;
+	\end{tikzpicture}
+}
+
+\vspace*{1cm}
+
+\textbf{MER}
+
+\vspace*{1cm}
+\begin{minipage}{0.30\textwidth}
+Cliente		(\PK{dni}, nombre, apellido, direccion, nacimiento)
+
+Producto	(\PK{codigo}, nombre, precio, \FK{cuit})
+
+Proovedor	(\PK{cuit}, nombre, direccion)
+
+compro		(\FPK{dni}, \FPK{codigo})
+
+\end{minipage}
+
+\end{center}
+
+\newpage
+\subsection{}
+\begin{center}
+	\textbf{DER}
+
+	\vspace{1cm}
+
+\scalebox{0.9}{
+		\begin{tikzpicture}[.style={DER}]
+				
+		%% Entidades; y relaciones
+		\node[entity]		(paquete)								{Paquete};
+		\node[relationship]	(transporta)	[left=of paquete]		{transporta};
+		\node[entity]		(camionero)		[left=of transporta]	{Camionero};
+		\node[relationship]	(llegaA)		[right=of paquete]		{llega a};
+		\node[entity] 		(provincia) 	[right=of llegaA]		{Provincia};
+		\node[relationship]	(conducidoPor)	[left=of camionero]		{conducido por};
+		\node[entity]		(camion)		[left=of conducidoPor]	{Camion};
+		
+		%% Atributos Camion
+		\node[]				(camionI)			[below=of camion]				{}; %%Auxiliar
+		\node[]				(camionII)			[below=of camionI]				{}; %%Auxiliar
+		\node[]				(camionIII)			[below=of camionII]				{}; %%Auxiliar
+		
+		\node[attributePK]	(camionMatricula)	[above=of camion]				{\PK{matricula}};
+		\node[attribute]	(camionModelo)		[above left=of camion]			{modelo};
+		\node[attribute]	(camionTipo)		[left=of camion]				{tipo};
+		\node[attribute]	(camionPotencia)	[below left =of camion]			{potencia};
+
+		%% Atributos camionero
+		\node[]				(camioneroI)			[below=of camionero]		{};
+		\node[]				(camioneroII)			[below=of camioneroI]		{};
+		
+		\node[attributePK]	(camioneroDni)			[above=of camionero]		{\PK{dni}};
+		\node[attribute]	(camioneroNombre)		[right=of camioneroDni]		{nombre};
+		\node[attribute]	(camioneroApellido)		[left=of camioneroI]		{apellido};
+		\node[attribute]	(camioneroTelefono)		[right=of camioneroI]		{telefono};
+		\node[attribute]	(camioneroDireccion)	[below left=of camioneroI]	{direccion};
+		\node[attribute]	(camioneroSalario)		[below right=of camioneroI]	{salario};
+		\node[attribute]	(camioneroPoblacion)	[below=of camioneroII]		{poblacion};
+		
+		%% Atributos Paquete
+		\node[]				(paqueteI)				[below=of paquete]			{};			
+		\node[attributePK]	(paqueteCodigo)			[above=of paquete]			{\PK{codigo}};
+		\node[attribute]	(paqueteDestinatario)	[below left=of paqueteI]	{destinatario};
+		\node[attribute]	(paqueteDescripcion)	[above right=of paquete]	{descripcion};
+		\node[attribute]	(paqueteDireccionEnvio)	[below right=of paqueteI]	{direccionEnvio};
+
+		%% Atributos provincia		
+		\node[attributePK]	(provinciaCodigoProvincia)	[above right=of provincia]		{\PK{codigoProvincia}};
+		\node[attribute]	(provinciaNombre)			[below right=of provincia]		{nombre};
+		
+		%%Atributos conducido por
+		\node[attributePK]	(conducidoPorFecha)	[above=of conducidoPor]		{\PK{fecha}};
+		
+		
+		\path
+			%% Atributos camion
+			(camion)	edge  	(camionMatricula)
+			(camion)	edge	(camionModelo)
+			(camion)	edge  	(camionTipo)
+			(camion)	edge 	(camionPotencia)
+			
+			%% Atributos camionero
+			(camionero)	edge	(camioneroDni)
+			(camionero)	edge	(camioneroNombre)
+			(camionero) edge 	(camioneroApellido)	
+			(camionero) edge 	(camioneroTelefono)
+			(camionero) edge 	(camioneroDireccion.45)	
+			(camionero) edge 	(camioneroSalario.135)
+			(camionero) edge	(camioneroPoblacion)
+			
+			%% Atributos de paquete
+			(paquete)	edge	(paqueteCodigo)
+			(paquete)	edge	(paqueteDescripcion)
+			(paquete)	edge	(paqueteDestinatario)
+			(paquete)	edge	(paqueteDireccionEnvio)
+			
+			%% Atributos de provincia
+			(provincia)	edge	(provinciaCodigoProvincia)
+			(provincia)	edge	(provinciaNombre)
+			
+			%% Relacion conducidoPor
+			(conducidoPor)	edge 	node[above, near end]	{N} (camion)
+			(conducidoPor)	edge	node[above, near end]	{M} (camionero)
+			(conducidoPor)	edge								(conducidoPorFecha)
+			
+			%% Relacion transporta
+			(transporta)	edge 	node[above, near end] 	{N}	(paquete)
+			(transporta)	edge	node[above, near end] 	{1} (camionero)
+			
+			%% Relacion llega
+			(llegaA)		edge	node[above, near end]	{N}	(paquete)
+			(llegaA)		edge	node[above, near end]	{1}	(provincia)
+			;	
+		\end{tikzpicture}
+		
+}
+
+\vspace*{1cm}
+
+\textbf{MER}
+
+\vspace{1cm}
+\begin{minipage}{0.485\textwidth}
+	Camion	(\PK{matricula}, modelo, tipo, potencia)
+	
+	Camionero	(\PK{dni}, nombre, apellido, telefono, direccionEnvio, salario, poblacion)
+	
+	Paquete	(\PK{codigo}, descripcion, destinatario, direccionDestinatario, \FK{dni}, \FK{codigoProvincia})
+	
+	Provincia (\PK{codigoProvincia}, nombre)
+	
+	compro(\FPK{matricula}, \FPK{dni}, \PK{fecha})
+	
+\end{minipage}
+\end{center}
+
+\newpage
+\subsection{}
+\subsubsection*{a)}
+	\begin{center}
+		\textbf{DER}
+		\vspace*{1cm}
+		
+		\scalebox{1}{
+			\begin{tikzpicture}[.style={DER}]
+			%		
+			%%		%% Entidades; y relaciones
+			\node[entity]		(examen)										{Examen};
+			\node[relationship] (calificaA)			[right=of examen]			{califica a};
+			\node[entity] 		(alumno)			[right=of calificaA]		{Alumno};
+			\node[entity]		(curso)				[below=of calificaA]		{Curso};
+			%% Atributos examen
+			\node[attributePK]	(examenIdExamen)	[above=of examen]			{\PK{idExamen}};
+			\node[attribute]	(examenFecha)		[above left=of examen]		{fecha};
+			\node[attribute]	(examenNota)		[left=of examen]			{nota};
+			
+			%% Atributos alumno
+			\node[attributePK]	(alumnoIdAlumno)	[above=of alumno]			{\PK{idAlumno}};
+			\node[attribute]	(alumnoNombre)		[above right=of alumno]		{nombre};
+			\node[attribute]	(alumnoApellido)	[right=of alumno]			{apellido};
+
+			%% Atributos curso
+			\node[attributePK]	(cursoIdCurso)		[left=of curso]				{\PK{idCurso}};
+			\node[attribute]	(cursoNombre)		[right=of curso]			{nombre};
+			
+			\path	
+			
+			%% Atributos examen
+			(examen)	edge	(examenIdExamen)
+			(examen)	edge	(examenFecha)
+			(examen)	edge	(examenNota)
+			
+			%%Atributos alumno
+			(alumno)	edge	(alumnoIdAlumno)
+			(alumno)	edge	(alumnoNombre)
+			(alumno)	edge	(alumnoApellido)
+
+			%%Atributos curso
+			(curso)		edge	(cursoIdCurso)
+			(curso)		edge	(cursoNombre)
+
+			%% Relacion califica a
+			(calificaA)	edge	node[above, near end] {N}	(examen)
+			(calificaA)	edge	node[above, near end] {1}	(alumno)
+			(calificaA) edge	node[right, near end] {1}	(curso)
+			;		
+			\end{tikzpicture}
+			
+		}
+	
+	\vspace*{1cm}
+	
+	\textbf{MER}
+	\vspace*{1cm}
+	
+	\begin{minipage}{0.239\textwidth}
+		Examen	(\PK{idExamen}, fecha, nota)
+		
+		Curso	(\PK{idCurso}, nombre)
+		
+		Alumno	(\PK{idAlumno}, nombre, apellido)
+		
+		califica a(\FPK{idAlumno}, \FPK{idExamen}, \FK{idCurso})
+			
+	\end{minipage}
+\end{center}
+
+\newpage
+\subsubsection*{b)}
+	\begin{center}
+		\textbf{DER}
+		\vspace*{1cm}
+		
+		\scalebox{1}{
+			\begin{tikzpicture}[.style={DER}]	
+			%% Entidades y realaciones
+			\node[entity]		(curso)														{Curso};
+			\node[relationship]	(evaluaA)			[right=of curso]						{califica a};
+			\node[entity]		(alumno)			[right=of evaluaA]						{Alumno};
+
+			%% Atributos curso
+			\node[attributePK]	(cursoIdCurso)		[above=of curso]						{\PK{idCurso}};
+			\node[attribute]	(cursoNombre)		[left=of curso]							{nombre};
+%			
+			%% Atributos alumno			
+			\node[attributePK]	(alumnoIdAlumno)	[above=of alumno]						{\PK{idAlumno}};
+			\node[attribute]	(alumnoNombre)		[above right=of alumno]					{nombre};
+			\node[attribute]	(alumnoApellid)		[right=of alumno]						{apellido};
+			
+			%% Atributos evalua a
+			\node[attributePK] 	(evaluaFecha)		[below left=of evaluaA]					{\PK{fecha}};
+			\node[attribute] 	(evaluaNota)		[below  right=of evaluaA]				{nota};
+
+			\path	
+				(alumno)			edge	(alumnoIdAlumno)
+				(alumno)			edge	(alumnoNombre)
+				(alumno)			edge	(alumnoApellido)
+				
+				(curso)				edge	(cursoIdCurso)
+				(curso)				edge	(cursoNombre)
+				
+				(evaluaA)	edge	node[above, near end] {N} (alumno)
+				(evaluaA) edge	node[above, near end] {M} (curso)
+				
+				(evaluaA) edge	(evaluaFecha)
+				(evaluaA) edge	(evaluaNota)
+			;		
+			
+			\end{tikzpicture}
+			
+		}
+	
+	\vspace*{1cm}
+	
+			\textbf{MER}
+	\vspace*{1cm}
+	
+		\begin{minipage}{0.227\textwidth}
+			Examen	(\PK{idExamen}, fecha, nota)
+			
+			Curso	(\PK{idCurso}, nombre)
+			
+			califica a(\FPK{idAlumno}, \FPK{idCurso}, \PK{fecha}, nota)
+			
+		\end{minipage}
+	\end{center}
+
+\newpage
+\subsection{\red{Duda}}
+\begin{center}
+			\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y realaciones
+		\node [entity] (agregacionClienteDireccion) {
+			\begin{tikzpicture}
+				\node[entity]		(cliente)											{Cliente};
+				\node[relationship]	(enviaA)				[right=of cliente]			{envia a};
+				\node[entity]		(direccion)				[right=of enviaA]			{Direccion};
+	
+				%%Atributos cliente
+				\node[attributePK]	(clienteNroCliente)		[above=of cliente] 			{\PK{nroCliente}};
+				\node[attribute] 	(clienteSaldo)			[above left=of cliente]		{saldo};
+				\node[attribute] 	(clienteLimiteCredito)	[left=of cliente]			{limiteCredito};
+				\node[attribute] 	(clienteDescuento)		[below left=of cliente]		{descuento};
+	
+				%% Atributos direccion
+				\node[attributePK]	(direccionIdDireccion)	[above=of direccion] 		{\PK{idDireccion}};
+				\node[attribute] 	(direccionN)			[above right=of direccion]	{numero};
+				\node[attribute] 	(direccionCalle)		[right=of direccion]			{calle};
+				\node[attribute] 	(direccionComuna)		[below right=of direccion]	{comuna};
+				\node[attribute] 	(direccionCiudad)		[below=of direccion]		{ciudad};
+				
+				\path
+				%%Atributos
+				(cliente)	edge	(clienteNroCliente)
+				(cliente) 	edge	(clienteSaldo)
+				(cliente) 	edge	(clienteLimiteCredito)
+				(cliente) 	edge	(clienteDescuento)
+				
+				(direccion)	edge	(direccionIdDireccion)
+				(direccion)	edge	(direccionN)	
+				(direccion)	edge	(direccionCalle)	
+				(direccion)	edge	(direccionComuna)	
+				(direccion)	edge	(direccionCiudad)	
+				
+				%%Relaciones
+				(enviaA) 	edge	node[yshift=0.2cm, pos=0.8] {N} 	(cliente)
+				(enviaA) 	edge	node[yshift=0.2cm, near end] {M} 	(direccion)
+				
+	;
+			\end{tikzpicture}
+		};
+	
+		\node[relationship]	(esCabeceraDe)	[below=of agregacionClienteDireccion] 	{cabecera de};
+		\node[entity]		(pedido)		[below=of esCabeceraDe]					{Pedido};
+		\node[] 			(auxI)			[right=of pedido] 						{};  %%Auxiliar
+		\node[relationship] (pide)			[right=of auxI]							{pide};
+		\node[] 			(auxII)			[right=of pide] 						{};  %%Auxiliar
+		\node[]				(auxIII)		[right=of auxII]						{};	 %%Auxiliar
+		\node[entity]		(articulo)		[right=of auxIII]						{Articulo};
+		\node[relationship]	(distribuye)	[above=of articulo]						{distribuye};
+		\node[entity]		(fabrica)		[above=of distribuye]					{Fabrica};
+	
+	
+		%%Atributos Articulo
+		\node[attributePK]	(articuloNroArticulo)	[right=of articulo] 					{\PK{nroArticulo}};
+		\node[attribute]	(articuloDescripcion)	[above right=of articulo] 				{descripcion};
+
+		%%Atributos Fabrica
+		\node[attributePK]	(fabricaNroFabrica)		[above=of fabrica] 						{\PK{nroFabrica}};
+		\node[attribute]	(fabricaTelefono)		[above right=of fabrica] 				{telefono};
+		
+		%%Atributos de pedido
+		\node[attributePK]	(pedidoIdPedido)		[left=of pedido] 						{\PK{idPedido}};
+		\node[attribute]	(pedidoFecha)			[above left=of pedido] 					{fecha};
+		
+		
+		%% Atributos relación fabrica distribuye articulo
+		\node[attribute]	(distribuyeCantDisponible)	[left=of distribuye] 	{cantDisponible};
+		
+		%%Atributos pedido pide articulo
+		\node[attribute]	(pideCantidad)				[below=of pide] 			{cantidad};
+		
+		\path
+			%%Atributos
+			(articulo)		edge	(articuloNroArticulo)
+			(articulo)		edge	(articuloDescripcion)
+
+			(pedido)		edge 	(pedidoIdPedido)
+			(pedido)		edge	(pedidoFecha)
+			
+			(fabrica)		edge	(fabricaNroFabrica)
+			(fabrica)		edge	(fabricaTelefono)
+						
+			(pide) 			edge 	(pideCantidad)
+			
+			(distribuye)	edge	(distribuyeCantDisponible)
+			
+			
+			%% Relaciones
+			(distribuye) 		edge	node[right, near end] {M}	(articulo)
+			
+			(esCabeceraDe)		edge	node[right, near end] {M}	(pedido)
+			
+			(pide)				edge	node[above, near end] {N} 	(pedido)
+			(pide)				edge 	node[above, near end] {M} 	(articulo)
+			;
+			
+			\path[rightOptional]
+				(esCabeceraDe) 	edge 	node[right, near end] {1} 	(agregacionClienteDireccion)
+				(distribuye) 	edge	node[right, near end] {N}	(fabrica)
+			;
+		\end{tikzpicture}
+		
+	}
+\end{center}
+
+\textbf{Restricciones:}
+\begin{itemize}
+	\item Cliente.limiteCredito debe ser menor a \$3.000.000
+\end{itemize}
+
+\begin{multicols}{2}
+	\textbf{MER}
+	
+	Cliente(\PK{nroCliente}, saldo, limiteCredito, descuento)
+	
+	Direccion(\PK{idDireccion}, numero, calle, comuna, ciudad)
+	
+	enviaA(\FPK{nroCliente}, \FPK{idDireccion})
+	
+	Pedido(\PK{idPedido}, fecha, \FK{nroCliente, idDireccion})
+	
+	Articulo(\PK{nroArticulo}, descripcion)
+	
+	pide(\FPK{idPedido}, \FPK{nroArticulo}, cantidad)
+	
+	Fabrica(\PK{nroFabrica}, telefono)
+	
+	distribuye(\FPK{nroFabrica}, \FPK{nroArticulo}, cantDisponible)
+	
+	\columnbreak
+	\red{\textbf{Notas}}
+	\begin{itemize}
+		\item \red{El enunciado aclara que fecha tiene un dia y una hora. ¿Que ventajas/deventajas tiene ponerla como atributo? ¿Debería haber una entidad que la represente?}
+		\item Al realizar una agregación de una relación M-N, se la toma como a una entidad más. Puede participar en cualquier tipo de relación y cuantas relaciones sea necesario.
+		\item Se pide saber cuantos artículos en total provee la fábrica. No es necesario almacenar este dato, se puede hacer una búsqueda en la tabla \textit{distribuye} de todos los objetos que tienen el \textit{nroFabrica} adecuado y sumar todos los valores.
+		\item Fábrica tiene participación parcial en la relación distribuye. Esto quiere decir que habrá algunas qué no distribuirán ningún producto a la empresa (estas son las fábricas alternativas).
+	\end{itemize}
+	
+\end{multicols}
+
+\newpage
+\subsection{}
+\subsubsection*{a)}
+\begin{center}
+	\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y realaciones
+		\node[entity]		(programador)												{Programador};
+		\node[relationship] (conoce)					[right=of programador]			{conoce};
+		\node[entity]		(lenguaje)					[right=of conoce]				{Lenguaje};
+		\node[entity]		(examen)					[above=of conoce]				{Examen};
+		
+		%%Atributos programador
+		\node[attributePK]	(programadorIdProgramador)	[left=of programador]		{\PK{idProgramador}};
+		\node[attribute]	(programadorNombre)			[below left=of programador]		{nombre};
+		\node[attribute]	(programadorApellido)		[below=of programador]			{apellido};
+		
+		%%Atributos lenguaje
+		\node[attributePK]	(lenguajeIdLenguaje)		[right=of lenguaje]			{\PK{idLenguaje}};
+		\node[attribute]	(lenguajeNombre)			[below right=of lenguaje]		{nombre};
+		
+		%%Atributos examen
+		\node[attribute]	(examenDificultad)			[above= of examen]				{dificultad};
+		\node[attribute]	(examenCantEjercicios)		[left=of examenDificultad]		{cantEjercicios};
+		\node[attributePK]	(examenIdExamen)			[left=of examen]				{\PK{idExamen}};
+		\node[attribute]	(examenFechaCreacion)		[right=of examenDificultad]		{fechaCreacion};
+		\node[attribute]	(examenTexto)				[right=of examen]			{texto};
+		
+		%%Atributos examen evalua programador
+		\node[attribute]	(conoceNota)	[below=of conoce]							{nota};
+		
+		
+		\path
+			%%Atributos
+			(programador)	edge 	(programadorIdProgramador)
+			(programador)	edge 	(programadorNombre)
+			(programador)	edge 	(programadorApellido)
+			
+			(lenguaje)		edge 	(lenguajeIdLenguaje)
+			(lenguaje)	 	edge 	(lenguajeNombre)
+			
+			(examen)		edge 	(examenIdExamen)
+			(examen)		edge 	(examenCantEjercicios)
+			(examen)		edge 	(examenDificultad)
+			(examen)		edge	(examenFechaCreacion)
+			(examen)		edge	(examenTexto)
+			
+			(conoce)		edge	(conoceNota)
+			
+			%%Relaciones
+			(conoce)		edge				node[above, near end]	{N}	(programador)
+			(conoce)	edge	node[right, near end]{1}	(examen)	
+			;
+		
+		\path[rightOptional]
+			(conoce)	edge	node[above, near end]{1}	(lenguaje)
+
+		;
+		
+	\end{tikzpicture}
+	}
+\end{center}
+
+\newpage
+\begin{multicols}{2}
+
+\textbf{MER}
+	
+	Programador(\PK{idProgramador}, nombre, apellido)
+	
+	Lenguaje	(\PK{idLenguaje}, nombre)
+	
+	Examen	(\PK{idExamen}, cantEjercicios, dificultad, fechaCreacion, texto, \FK{idLenguaje})
+
+	conoce(\FPK{idProgramador}, \FPK{idLenguaje}, \FK{examen}, nota)
+	
+\columnbreak
+\red{\textbf{Notas}}
+\begin{itemize}
+	\item Las relaciones ternarias pueden tener atributos siempre y cuando\textbf{ no }sean identificatorios
+\end{itemize}
+\end{multicols}
+
+\paragraph*{b)}
+\begin{center}
+	\textbf{DER}
+	\vspace*{1cm}
+	
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]
+		\node[entity] (agProgramadorLenguaje) {
+			\begin{tikzpicture}
+			\node[entity]		(programador)												{Programador};
+			\node[relationship] (conoce)					[right=of programador]			{conoce};
+			\node[entity]		(lenguaje)					[right=of conoce]				{Lenguaje};
+			
+				%%Atributos programador
+					\node[attributePK]	(programadorIdProgramador)	[left=of programador]		{\PK{idProgramador}};
+					\node[attribute]	(programadorNombre)			[below left=of programador]		{nombre};
+					\node[attribute]	(programadorApellido)		[below=of programador]			{apellido};
+					
+					%%Atributos lenguaje
+					\node[attributePK]	(lenguajeIdLenguaje)		[right=of lenguaje]			{\PK{idLenguaje}};
+					\node[attribute]	(lenguajeNombre)			[below right=of lenguaje]		{nombre};
+			
+			\path
+					%%Atributos
+					(programador)	edge 	(programadorIdProgramador)
+					(programador)	edge 	(programadorNombre)
+					(programador)	edge 	(programadorApellido)
+					
+					(lenguaje)		edge 	(lenguajeIdLenguaje)
+					(lenguaje)	 	edge 	(lenguajeNombre)
+			
+					(conoce)	edge	node[yshift=0.3cm, near end]	{N}	(programador)
+					;
+					
+					\path[rightOptional]
+					(conoce)	edge	node[yshift=0.3cm, near end]	{M}	(lenguaje)
+					
+					;
+			\end{tikzpicture}
+		};
+
+		\node[entity]		(examen)					[above=of agProgramadorLenguaje]				{Examen};
+%		
+%		%%Atributos programador
+%		\node[attributePK]	(programadorIdProgramador)	[left=of programador]		{\PK{idProgramador}};
+%		\node[attribute]	(programadorNombre)			[below left=of programador]		{nombre};
+%		\node[attribute]	(programadorApellido)		[below=of programador]			{apellido};
+%		
+%		%%Atributos lenguaje
+%		\node[attributePK]	(lenguajeIdLenguaje)		[right=of lenguaje]			{\PK{idLenguaje}};
+%		\node[attribute]	(lenguajeNombre)			[below right=of lenguaje]		{nombre};
+%		
+%		%%Atributos examen
+%		\node[attribute]	(examenDificultad)			[above= of examen]				{dificultad};
+%		\node[attribute]	(examenCantEjercicios)		[left=of examenDificultad]		{cantEjercicios};
+%		\node[attributePK]	(examenIdExamen)			[left=of examen]				{\PK{idExamen}};
+%		\node[attribute]	(examenFechaCreacion)		[right=of examenDificultad]		{fechaCreacion};
+%		\node[attribute]	(examenTexto)				[right=of examen]			{texto};
+%		
+%		%%Atributos examen evalua programador
+%		\node[attribute]	(conoceNota)	[below=of conoce]							{nota};
+%		
+%		
+%		\path
+%		%%Atributos
+%		(programador)	edge 	(programadorIdProgramador)
+%		(programador)	edge 	(programadorNombre)
+%		(programador)	edge 	(programadorApellido)
+%		
+%		(lenguaje)		edge 	(lenguajeIdLenguaje)
+%		(lenguaje)	 	edge 	(lenguajeNombre)
+%		
+%		(examen)		edge 	(examenIdExamen)
+%		(examen)		edge 	(examenCantEjercicios)
+%		(examen)		edge 	(examenDificultad)
+%		(examen)		edge	(examenFechaCreacion)
+%		(examen)		edge	(examenTexto)
+%		
+%		(conoce)		edge	(conoceNota)
+%		
+%		%%Relaciones
+%		(conoce)		edge				node[above, near end]	{N}	(programador)
+%		(conoce)	edge	node[right, near end]{1}	(examen)	
+%		;
+%		
+%		\path[rightOptional]
+%		(conoce)	edge	node[above, near end]{1}	(lenguaje)
+%		
+%		;
+%		
+		\end{tikzpicture}
+	}
+\end{center}
+
+\newpage
+\begin{multicols}{2}
+	
+	\textbf{MER}
+	
+	Programador(\PK{idProgramador}, nombre, apellido)
+	
+	Lenguaje	(\PK{idLenguaje}, nombre)
+	
+	Examen	(\PK{idExamen}, cantEjercicios, dificultad, fechaCreacion, texto, \FK{idLenguaje})
+	
+	conoce(\FPK{idProgramador}, \FPK{idLenguaje}, \FK{examen}, nota)
+	
+\end{multicols}
+
+\subsection{\red{Duda}}
+\begin{multicols}{2}
+\subsubsection*{a)}
+	\hspace*{2cm}
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		%% Entidades y realaciones
+		\node[entity]		(empleado)									{Empleado};
+		\node[relationship]	(dependeDe)			[below=of empleado]		{depende de};
+	
+		%%Atributos empleado	
+		\node[attributePK]	(empleadoLegajo)	[above=of empleado] 	 {\PK{legajo}};
+		\node[attribute]	(empleadoNombre)	[above left=of empleado] {nombre};
+		\node[attribute] 	(empleadoApellido) 	[left=of empleado] 		 {apellido};
+		
+		\path
+			%%Atributos
+			(empleado)	edge (empleadoLegajo)
+			(empleado)	edge (empleadoNombre)
+			(empleado)	edge (empleadoApellido)
+			
+			%%Relaciones
+			(dependeDe.east) edge[in=east, out=east] node[above, pos=0.95] {1} (empleado.east)
+
+		;
+				
+		\path[rightOptional]
+		(dependeDe)	edge node[right, near end] {M} (empleado)
+		;
+		\end{tikzpicture}
+	}
+
+\textbf{Restricciones}
+\begin{itemize}
+	\item Un empleado no puede depender de si mismo.
+\end{itemize}		
+\subsubsection*{b)}
+\hspace*{2cm}
+\scalebox{1}{
+	\begin{tikzpicture}[.style={DER}]	
+	%% Entidades y realaciones
+	\node[entity]		(empleado)												{Empleado};
+	\node[inheritance]	(inheritanceEmpleado)	[below=of empleado]				{D}; 
+	\node[entity]		(jefe)	 				[below=of inheritanceEmpleado]	{Jefe};
+
+	%% Atributos	
+	\node[relationship]	(dependeDe)				[right=of inheritanceEmpleado]	{depende de};
+	\node[attributePK]	(empleadoLegajo)		[above left=of empleado] 	 	{\PK{legajo}};
+	\node[attribute]	(empleadoNombre)		[left=of empleado] 				{nombre};
+	\node[attribute] 	(empleadoApellido) 		[below left=of empleado] 		{apellido};
+	
+	\node[attribute]	(jefeCelular)			[left=of jefe] 					{celular};
+
+%	
+	\path
+		%%Atributos
+		(empleado)	edge (empleadoLegajo)
+		(empleado)	edge (empleadoNombre)
+		(empleado)	edge (empleadoApellido)
+		
+		(jefe) 		edge (jefeCelular)
+		
+		%% Herencias
+		(inheritanceEmpleado)	edge node[midway]{O} (empleado)
+		(inheritanceEmpleado)	edge (jefe)
+		
+		%%Relaciones
+		(dependeDe.south) edge[in=east, out=south] node[above, near end] {1} (jefe.east)
+	;
+	\path[rightOptional]
+		(dependeDe.north) edge[in=east, out=north] node[above, near end]{N} (empleado.east)
+	;
+	\end{tikzpicture}
+}
+
+\textbf{Restricciones}
+\begin{itemize}
+	\item Un jefe no puede depender de si mismo.
+\end{itemize}		
+\end{multicols}
+
+\newpage
+\subsubsection*{c)}
+\begin{center}
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%%Entidades y relaciones
+		\node[entity]		(empleado)												{Empleado};
+		\node[inheritance]	(inheritanceEmpleado) 	[below=of empleado]				{D}; 
+		\node[entity]		(jefe)	 				[below=of inheritanceEmpleado]	{Jefe};
+		\node[relationship]	(dependeDe)				[right=of inheritanceEmpleado]	{depende de};
+		\node[]				(izqDependeDe)			[right=of dependeDe]			{}; %Auxiliar			
+		\node[relationship]	(trabajaEn) 			[right=of izqDependeDe] 		{trabaja en};
+		\node[entity]		(departamento)			[below=of trabajaEn] 			{Departamento};
+		\node[relationship]	(esGerenteDe)		[left=of departamento] 			{gerente de};
+		
+		%% Atributos empleado
+		\node[attributePK]	(empleadoLegajo)	[above left=of empleado] 	{\PK{legajo}};
+		\node[attribute]	(empleadoNombre)	[left=of empleado] 			{nombre};
+		\node[attribute] 	(empleadoApellido) 	[below left=of empleado] 	{apellido};
+		
+		%%Atributos jefe
+		\node[attribute]	(jefeCelular)	[left=of jefe] {celular};
+		
+		%%Atributos departamento
+		\node[attributePK]	(departamentoCodigo)	[right=of departamento]	{\PK{codigo}};
+		\node[attribute]	(departamentoNombre)	[below right=of departamento] {nombre};	
+		
+			
+		\path
+		%%Atributos
+		(empleado)		edge (empleadoLegajo)
+		(empleado)		edge (empleadoNombre)
+		(empleado)		edge (empleadoApellido)
+		
+		(jefe) 			edge (jefeCelular)
+		
+		(departamento)	edge (departamentoCodigo)
+		(departamento)	edge (departamentoNombre)
+		
+		%%Herencias
+		(inheritanceEmpleado)	edge	node[midway]{O}	(empleado)
+		(inheritanceEmpleado)	edge 					(jefe)
+		
+		%%Relaciones
+		(dependeDe.south)	edge[in=east, out=south]		node[above, near end]	{1}	(jefe.15)
+		
+		(trabajaEn.north)	edge[in=east, out=north]	node[above, pos=0.95]	{N}	(empleado.15)
+		(trabajaEn) 		edge 				node[left, near end]	{1} (departamento)
+		
+		(esGerenteDe)		edge 				node[above, near end]	{1} (departamento)
+		;
+%		
+%		
+		\path[rightOptional]
+		(dependeDe.north) 	edge[in=east, out=north] 	node[below, near end]		{N}	(empleado.-15)
+		(esGerenteDe.west) 	edge[in=east, out=west] 	node[below left, near end] 	{1} (jefe.-15)
+		;
+		\end{tikzpicture}
+	}
+\end{center}
+\textbf{Restricciones}
+\begin{itemize}
+	\item Un jefe no puede depender de si mismo.
+	\item El gerente de un departamento debe trabajar en ese departamento.
+\end{itemize}	
+
+\newpage
+\subsubsection*{d)}
+\begin{center}
+	\scalebox{1}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%%Entidades y relaciones
+		\node[entity]		(empleado)												{Empleado};
+		\node[inheritance]	(inheritanceEmpleado) 	[below=of empleado]				{D}; 
+		\node[entity]		(jefe)	 				[below=of inheritanceEmpleado]	{Jefe};
+		\node[relationship]	(dependeDe)				[right=of inheritanceEmpleado]	{depende de};
+		\node[]				(izqDependeDe)			[right=of dependeDe]			{}; %Auxiliar			
+		\node[relationship]	(trabajaEn) 			[right=of izqDependeDe] 		{trabaja en};
+		\node[entity]		(departamento)			[below=of trabajaEn] 			{Departamento};
+		\node[relationship]	(esGerenteDe)			[left=of departamento] 			{gerente de};
+		
+		%% Atributos empleado
+		\node[attributePK]	(empleadoLegajo)		[above left=of empleado] 		{\PK{legajo}};
+		\node[attribute]	(empleadoNombre)		[left=of empleado] 				{nombre};
+		\node[attribute] 	(empleadoApellido) 		[below left=of empleado] 		{apellido};
+		
+		%%Atributos jefe
+		\node[attribute]	(jefeCelular)			[left=of jefe] {celular};
+		
+		%%Atributos departamento
+		\node[attributePK]	(departamentoCodigo)	[right=of departamento]			{\PK{codigo}};
+		\node[attribute]	(departamentoNombre)	[below right=of departamento] 	{nombre};	
+		
+		%%Atributos empleado trabaja en
+		\node[attribute]	(trabajaEnHasta)		[right=of trabajaEn]		{hasta};
+		\node[attributePK]	(trabajaEnDesde)		[above=of trabajaEnHasta]		{\PK{desde}};
+		
+		%%EJES
+		\path
+		%%Atributos
+		(empleado)		edge (empleadoLegajo)
+		(empleado)		edge (empleadoNombre)
+		(empleado)		edge (empleadoApellido)
+		
+		(jefe) 			edge (jefeCelular)
+		
+		(departamento)	edge (departamentoCodigo)
+		(departamento)	edge (departamentoNombre)
+		
+		(trabajaEn)		edge (trabajaEnDesde)
+		(trabajaEn)		edge (trabajaEnHasta)
+		%%Herencias
+		(inheritanceEmpleado)	edge	node[midway]{O}	(empleado)
+		(inheritanceEmpleado)	edge 					(jefe)
+		
+		%%Relaciones
+		(dependeDe.south)	edge[out=south, in=east]		node[above, near end]	{1}	(jefe.15)
+		
+		(trabajaEn.north)	edge[in=east, out=north]	node[above, pos=0.95]	{N}	(empleado.15)
+		(trabajaEn) 		edge 				node[left, near end]	{M} (departamento)
+		
+		(esGerenteDe)		edge 				node[above, near end]	{1} (departamento)
+		;
+		%		
+		%		
+		\path[rightOptional]
+		(dependeDe.north) 	edge[in=east, out=north] 	node[below, near end]		{N}	(empleado.-15)
+		(esGerenteDe.west) 	edge[in=east, out=west] 	node[below left, near end] 	{1} (jefe.-15)
+		;
+		\end{tikzpicture}
+	}
+\end{center}
+\begin{multicols}{2}
+\textbf{Restricciones}
+
+\begin{itemize}
+	\item Un jefe no puede depender de si mismo.
+	\item El gerente de un departamento debe trabajar en ese departamento.
+	\item Un empleado no puede trabajar en dos departamentos distintos en el mismo intervalo de tiempo (o en intervalos que se superponen).
+	\item Para un empleado que actualmente esté trabajando en un departamento, el atributo \textit{trabajaEn.hasta} será nulo.
+\end{itemize}
+
+\red{
+\paragraph{e)} El modelo propuesto no puede garantizar que se cumpla esta condición.
+Se podría agregar una Entidad puesto y crear una ternaria con Departamento y Empleado, pero perderíamos el historial de trabajo. En este caso, la relación \textit{es gerente} desaparecería y se podría conseguir esa información consiguiendo todos los empleados que tienen una entrada con el puesto de gerencia en la nueva relación.
+}
+\paragraph{\red{Notas}} La relación \textit{trabajaEn} tiene un atributo \textit{hasta} que será null en varios casos. ¿Es necesario arreglar esto? Se podría tener una relación especial sin atributos para los trabajadores actuales y otra para el historial. Pero hay que ver como se guardaría la fecha en la que empezó a trabajar y, cuando alguien termina de trabajar, habría que actualizar dos tablas.
+\end{multicols}

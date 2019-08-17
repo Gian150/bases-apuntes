@@ -1,0 +1,522 @@
+\section{Ejercicios Avanzados}
+
+\subsection{}
+
+\begin{multicols}{2}
+
+\noindent\textbf{MER 1}
+
+\noindent Persona(\PK{dni}, nombre, direccion, telefono, obraSocial, nroAfiliado, nombreSindicato, fechaIngreso, puesto)
+
+\noindent tieneHijos(\FPK{dni1}, \FPK{dni2})
+
+\vspace*{0.5cm}
+\noindent\textbf{Restricción:} Una persona no puede ser su propio hijo ($dni1 \neq dni2$)
+\vspace*{1cm}
+
+\noindent\textbf{MER2}
+
+\noindent Persona(\PK{dniPersona}, nombre, direccion, telefono, obraSocial, nroAfiliado, nombreSindicato, fechaIngreso, puesto)
+
+\noindent Hijos(\PK{dniHijo}, nombre, direccion)
+
+\noindent tiene(\FPK{dniPersona}, \FPK{dniHijo})
+
+\columnbreak
+\noindent\textbf{MER3}
+
+\noindent Persona(\PK{dni}, nombre, direccion, tipo)
+
+\noindent Empleado(\FPK{dni}, nombreSindicato, nroAfiliado, obraSocial, telefono, fechaIngreso, puesto)
+
+\noindent Hijos(\FPK{dni})
+
+\noindent tiene(\FPK{dni1}, \FPK{dni2})
+
+\vspace*{0.5cm}
+\noindent\textbf{Restriccion:} \textit{dn1} debe ser el dni de un empleado y \textit{dn2} el dni de un hijo. (dn1 debe tener una entrada en la tabla empleado y dn2 una en la tabla hijo)
+\end{multicols}
+
+\newpage
+\begin{landscape}
+\subsection{\red{Checkear}}
+\begin{center}
+	\vspace*{3cm}
+	\scalebox{0.85}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%% Persona
+		\node[entity]				(persona)													{Persona};
+		\node[attributePK]			(personaDni)			[above=of persona]					{\PK{dni}};
+		\node[attribute]			(personaApellido)		[above left=of persona]				{apellido};
+		\node[attribute]			(personaNombre)			[left=of persona]					{nombre};
+		\node[attribute]			(personaDireccion)		[below left=of persona]				{direccion};
+		\node[attribute]			(personaTelefono)		[below=of persona]					{telefono};
+		
+		%% InheritaEntidadesnce Persona
+		\node[inheritance]			(inheritancePersona)	[right=of persona]					{D};
+		\node[entity]				(cliente)				[below right=of inheritancePersona]	{Cliente};
+		
+		%% Vendedor
+		\node[entity]				(vendedor)				[above right=of inheritancePersona]	{Vendedor};			
+		
+		%% Realizó y Partició en
+		\node[weak relationship]	(realizo)				[right=of vendedor]					{realizó};
+		\node[relationship]			(participoEn)			[right=of cliente]					{participó en};
+		
+		%% Venta
+		\node[weak entity]			(venta)					[right=of participoEn]				{Venta};
+		\node[attributePK]			(ventaIdVenta)			[above right=of venta]				{\PK{idVenta}};
+		\node[attribute]			(ventaFecha)			[right=of venta]					{fecha};
+		
+		%% pertenece A
+		\node[relationship]			(tiene)					[below=of cliente]					{tiene};
+		\node[attribute]			(tieneHasta)			[left=of tiene] 					{hasta};
+		\node[attribute]			(tieneDesde)			[above =of tieneHasta] 				{desde};
+		
+		%% Vehiculos e inheritance
+		\node[entity]				(usado)					[below=of tiene]					{Usado};
+		\node[inheritance]			(inheritanceVehiculo)	[below left=of usado]				{D};
+		\node[entity]				(nuevo)					[below right=of inheritanceVehiculo]{Nuevo};
+		
+		\node[entity]				(vehiculo)				[left=of inheritanceVehiculo]		{Vehiculo};
+		\node[attributePK]			(vehiculoMatricula)		[above left=of vehiculo]			{\PK{matricula}};
+		
+		\node[relationship]			(cedidoEn)				[right=of usado]					{cedido en};
+		\node[relationship]			(vendidoEn)				[right=of nuevo]					{vendido en};
+		
+		\node[attribute]			(usadoTasacion)			[left=of usado]						{tasación};	
+		\node[attribute]			(nuevoPrecio)			[above=of nuevo]					{precio};
+		
+		%%Modelo
+		\node[relationship] 		(esModelo)				[below=of vehiculo]					{es};
+		\node[entity] 				(modelo)				[below=of esModelo] 				{Modelo};
+		
+		\node[attributePK] 			(modeloNombre) 			[above left=of modelo]				{\PK{nombre}};
+		\node[attribute]			(modeloCilindrada) 		[left=of modelo] 					{cilindrada};
+		\node[attributePK] 			(modeloMarca)			[below left=of modelo] 				{\PK{marca}};
+		
+		%%Opciones
+		\node[relationship]			(puedeTener)			[below=of modelo]					{puede tener};
+		\node[attribute]			(puedeTenerPrecio)		[below=of puedeTener]				{precio};
+		\node[entity]				(opcion)				[right=of puedeTener]				{Opcion};
+		\node[attributePK]			(opcionNombre)			[below=of opcion]					{\PK{nombreOp}};
+		\node[attribute]			(opcionDescripcion)		[below right=of opcion]				{descripción};
+		
+		\node[relationship]			(conOpciones)			[below=of nuevo]					{con};
+		
+		%%Ejes
+		\path
+		%%Atributos
+		(persona)				edge	(personaDni)
+		(persona)				edge	(personaApellido)
+		(persona)				edge	(personaNombre)
+		(persona)				edge	(personaDireccion)
+		(persona)				edge	(personaTelefono)
+		
+		(inheritancePersona)	edge 	(persona)
+		(inheritancePersona)	edge 	(vendedor)
+		(inheritancePersona)	edge 	(cliente)
+		
+		(venta)					edge	(ventaIdVenta)
+		(venta)					edge	(ventaFecha)
+		
+		(vehiculo)				edge 	(vehiculoMatricula)
+		
+		
+		(inheritanceVehiculo)	edge	(vehiculo)
+		(inheritanceVehiculo)	edge	(nuevo)
+		(inheritanceVehiculo)	edge	(usado)
+		
+		(nuevo)					edge	(nuevoPrecio)
+		(usado)					edge	(usadoTasacion)			
+		
+		
+		(tiene)					edge	(tieneDesde)
+		(tiene)					edge	(tieneHasta)
+		
+		(modelo)				edge	(modeloNombre)
+		(modelo)				edge	(modeloCilindrada)
+		(modelo)				edge	(modeloMarca)
+		
+		(opcion)				edge	(opcionNombre)
+		(opcion)				edge	(opcionDescripcion)
+		
+		(puedeTener)			edge	(puedeTenerPrecio)
+		
+		%%Relaciones
+		(participoEn)		edge						node[above, near end]		{N}	(cliente)
+		(participoEn)		edge[out=east, in=160]						node[above, near end]		{M}	(venta)
+		
+		(realizo.east)		edge[in=north, out=east]	node[right, pos=0.95]		{N}	(venta.north)
+		
+		(tiene)				edge						node[right, near end]		{M}	(usado)	
+		
+		(cedidoEn)			edge						node[above, near end]		{1}	(usado)
+		
+		(vendidoEn)			edge						node[above, near end]		{1}	(nuevo)
+		
+		(vendidoEn)			edge[in=220, out=east]		node[below right, pos=0.95]	{1}	(venta)
+		
+		(esModelo)			edge 						node[right, near end]		{N}	(vehiculo)
+		(esModelo)			edge 						node[right, near end]		{1}	(modelo)
+		
+		(puedeTener)		edge						node[right, near end]		{N}	(modelo)
+		(puedeTener)		edge						node[above, near end]		{M}	(opcion)
+		;
+		
+		\path[rightOptional]
+		(realizo)			edge						node[above, near end]		{1}	(vendedor)
+		
+		(tiene)				edge						node[right, near end]		{N}	(cliente)
+		
+		(cedidoEn.east)		edge[out=east, in=west]		node[below, pos=0.95]	{1}	(venta)
+		
+		(conOpciones)		edge						node[left, near end]		{M}	(nuevo)
+		(conOpciones)		edge[in=north, out=south]	node[above left, near end]		{N}	(opcion)
+		;
+		\end{tikzpicture}
+	}
+\end{center}
+\end{landscape}
+
+
+\textbf{MER}
+\begin{multicols}{2}
+	\noindent Persona(\PK{dni}, nombre, apellido, direccion, telefono, tipo)
+	
+	\noindent Venta(\PK{idVenta}, fecha, \FPK{dni}, \FK{matricula})
+	
+	FK=\{ dni : Vendendor, matricula : Nuevo \}
+	
+	\noindent  Vehiculo(\PK{matricula}, tipo, \FPK{nombre, marca})
+	
+	\noindent Usado(\FPK{matricula}, tasacion, \FK{idVenta})
+	
+	\noindent Nuevo(\FPK{matricula}, precio)
+	
+	\noindent Modelo(\PK{nombre, marca}, cilindrada)
+	
+	\noindent Opcion(\PK{nombreOp}, descripcion)
+	
+	\noindent participoEn(\FPK{dni}, \FPK{idVenta})
+	
+	FK=\{ dni : Cliente, idVenta : Venta \}
+	
+	\noindent tiene(\FPK{dni}, \FPK{matricula}, desde, hasta)
+	
+	FK=\{ dni : Cliente, matricula : Usado \}
+	
+	\noindent puedeTener(\FPK{nombre, marca}, \FPK{nombreOp}, precio)
+	
+	\noindent con(\FPK{matricula}, \FPK{nombreOp})
+	
+	FK=\{ matricula : Nuevo, nombreOp : Opcion \}
+
+\columnbreak
+\textbf{Restricciones}
+\begin{itemize}
+	\item \textit{cedido.matricula} debe ser un auto usado y debe pertenecer al cliente que participó en la venta \textit{cedido.idVenta}. 
+	\item \textit{tiene.hasta} debe ser menor o igual a la fecha en la que ocurrió la venta en la que el cliente cedió el auto.
+	\item \textit{vendidoEn.matricula} debe ser la matricula de un auto nuevo.
+	\item \textit{nuevo.precio} debe tener en cuenta el precio de cada opcion agregada al auto.
+\end{itemize}	
+
+\textbf{\red{Nota}}
+\begin{itemize}
+	\item Acá no puedo usar una ternaria Usuario - Usado - Venta porque hay ventas en las que el usuario no cede ningún auto. Si pusiesemos una ternaria, entonces tendriamos una tabla en la que un atributo quedaría nulo la mayoría de las veces.
+\end{itemize}
+\end{multicols}
+
+\newpage
+\subsection{}
+\begin{multicols}{2}
+Describir a modo requerimiento, sería escribir todo el texto a partir del cual podrimos diseñar el DER.
+
+\vspace*{0.5cm}
+\textbf{MER}
+
+Producto(\PK{idProducto}, descripcion)
+
+Distribuidor(\PK{numDistribuidor}, nombre)
+
+Area(\PK{idArea}, nombre)
+
+Local(\PK{numLocal}, direccion)
+
+Deposito(\PK{numDeposito}, \FPK{Local} capacidad)
+
+Empleado(\PK{CUIL}, fechaIngreso, tipoContratacion)
+
+EmpleadoEfectivo( \FPK{CUIL}, cantHijos)
+
+EmpleadoEfectConGremio(\FPK{CUIL}, fechaAfiliacionGremio)
+
+EmpleadoEfectConPrepaga(\FPK{CUIL}, numAfiliado)
+
+trabajaEn(\FPK{numLocal}, \FPK{CUIL}, \FK{idArea}, cantHoras)
+
+distribuidoPor(\FPK{idProducto}, \FPK{numDistribuidor}, \FK{idArea})
+
+
+
+
+\columnbreak
+.
+\end{multicols}
+
+\newpage
+\subsection{\red{DUDA}}
+
+\vspace*{-1.25cm}
+\begin{center}
+	\scalebox{0.8}{
+		\begin{tikzpicture}[.style={DER}]	
+		
+		%% Entidades y relaciones
+		\node[entity]		(departamento)													{Departamento};
+		\node[relationship]	(trabajaEn)						[above=of departamento]			{trabaja en};
+		
+		\node[]				(aTrabajaEn)					[above=of trabajaEn]			{}; %Auxiliar
+		\node[entity]		(empleado)						[above=of aTrabajaEn]			{Empleado};
+		\node[inheritance]	(inhEmpleado)					[right=of empleado]				{D};
+		\node[entity]		(administrativo)				[above right=of inhEmpleado]	{Administrativo};
+		
+		\node[entity]		(docente)						[below right=of inhEmpleado]	{Docente};
+		\node[]				(rDocente)						[right=of docente]				{}; %Auxiliar
+		\node[inheritance]	(inhDocente)					[right=of rDocente]				{D};
+		\node[entity]		(aTiempoCompleto)				[above right=of inhDocente]		{A tiempo completo};
+		\node[entity]		(aTiempoParcial)				[below right=of inhDocente]		{A tiempo parcial};
+		
+		\node[inheritance]	(inhAdministrativo)				[above=of administrativo]		{D};
+		\node[entity]		(coordinador)					[above=of inhAdministrativo]	{Coordinador};
+		\node[entity]		(secretario)					[right=of coordinador]			{Secretario};
+		\node[entity]		(tecnico)						[left=of coordinador]			{Técnico};
+		
+		\node[]				(ldepartamento)					[left=of departamento]			{}; %Auxiliar
+		\node[relationship]	(perteneceA)					[left=of ldepartamento]			{pertenece a};
+		\node[]				(lperteneceA)					[left=of perteneceA]			{}; %Auxiliar
+		\node[entity]		(estudiante)					[left=of lperteneceA]			{Estudiante};
+		\node[inheritance]	(inhEstudiante)					[above=of estudiante]			{O};
+		\node[entity]		(regular)						[above left=of inhEstudiante]	{Regular};
+		\node[entity]		(graduado)						[above right=of inhEstudiante]	{Graduado};
+
+		\node[relationship]	(encargadoDe)					[below=of docente]				{encargado de};
+			
+		\node[relationship]	(esDe)							[left=of empleado]				{es de};
+		\node[entity]		(telefono)						[left=of esDe]					{Telefono};
+		
+		\node[relationship]	(egresadoDe)					[right=of graduado]				{egresado de};
+			
+		\node[relationship]	(inscriptoEn)					[below=of estudiante]			{incripto en};
+		\node[entity]		(curso)							[below=of inscriptoEn]			{Curso};
+
+		\node[]				(lCurso)						[left=of curso]					{};
+		\node[entity]		(semestre)						[left=of lCurso]				{Semestre};		
+		
+		\node[relationship]			(dictadoPor)					[right=of curso]				{dictado por};
+		\node[weak entity]			(seccion)					[right=of dictadoPor]			{Sección};
+		\node[weak relationship]	(seDivideEn)			[below=of departamento]			{se divide en};
+		
+		%% Atributos Departamento
+		\node[attributePK]	(departamentoIdDpto)			[right=of departamento, yshift=-1cm]	{\PK{idDpto}};
+		\node[attribute]	(departamentoNombre)			[below=of departamentoIdDpto]			{nombre};
+	
+		%% Atributos Empleado
+		\node[attributePK]	(empleadoCodigo)				[above=of empleado]				{\PK{codigo}};
+		\node[attribute]	(empleadoNombre)				[above left=of empleado]		{nombre};
+		
+		%% Atributos Coordinador
+		\node[attribute]	(coordinadorEmail)				[above=of coordinador]			{email};
+		
+		%% Atributos Tecnico
+		\node[attribute]	(tecnicoNivelEstudio)			[above=of tecnico]				{nivelEstudio};
+		
+		%% Atributos Docente
+		\node[attribute]	(docenteEmail)					[above=of docente]				{email};
+		\node[attribute]	(docentePaginaWeb)				[above right=of docente] 		{paginaWeb};
+		
+		%% Atributos Estudiante
+		\node[attributePK]	(estudianteCodigoEstudiante)	[above left=of estudiante] 		{\PK{codEstudiante}};
+		\node[attribute]	(estudianteNombre)				[left=of estudiante] 			{nombre};
+		\node[attribute]	(estudianteMail)				[below left=of estudiante]		{mail};
+		
+		%% Atributos egresadoDe
+		\node[attributePK]	(egresadoDeAnioEgreso)			[below left=of egresadoDe]		{\PK{añoEgreso}};
+		%%Atributos relación perteneceA
+		\node[attributePK]	(perteneceAAnioIngreso)			[below left=of perteneceA, xshift=1cm]			{\PK{añoIngreso}};
+		
+		%% Atributos telefono
+		\node[attributePK]	(telefonoNumero)				[above=of telefono]				{numero};
+		
+		%% Atributos semestre
+		\node[attributePK]	(semestreIdSemestre)			[above=of semestre]				{\PK{idSemestre}};
+		\node[attribute]	(semestreFechaInicio)			[above left=of semestre]		{fechaInicio};
+		\node[attribute]	(semestreFechaFin)				[left=of semestre]				{fechaFin};
+			
+		%% Atributos sección
+		\node[attributePK]	(seccionIdSeccion)				[right=of seccion]		{\PK{idSeccion}};
+		\node[attribute]	(seccionNombre)					[below right=of seccion, yshift=0.5cm]				{nombre};
+		
+		%% Atributos curso
+		\node[attributePK]	(cursoIdCurso)					[below left=of curso]	{\PK{idCurso}};
+		\node[attribute]	(cursoNombre)					[below=of curso]		{nombre};
+		\node[attribute]	(cursoCreditos)					[below right=of curso]		{creditos};
+		%% Atributos inscriptoEn
+		\node[attribute]	(inscriptoEnNota)					[below right=of inscriptoEn, yshift=0.5cm]	{nota};
+		
+		\path
+			%%Atributos
+			(departamento)		edge	(departamentoIdDpto)
+			(departamento)		edge	(departamentoNombre)
+			
+			(inhEmpleado)		edge 	(empleado)
+			(inhEmpleado)		edge	(administrativo)
+			(inhEmpleado)		edge	(docente)
+			
+			(empleado)			edge	(empleadoCodigo)
+			(empleado)			edge	(empleadoNombre)
+		
+			(inhAdministrativo)	edge	(administrativo)
+			(inhAdministrativo)	edge	(secretario)
+			(inhAdministrativo)	edge	(coordinador)
+			(inhAdministrativo)	edge	(tecnico)
+			
+			
+			(coordinador)		edge	(coordinadorEmail)
+			(tecnico)			edge	(tecnicoNivelEstudio)
+			
+			(docente)			edge	(docenteEmail)
+			(docente)			edge	(docentePaginaWeb)
+			
+			(inhDocente)		edge	(docente)
+			(inhDocente)		edge	(aTiempoCompleto)
+			(inhDocente)		edge	(aTiempoParcial)
+			
+			(estudiante)		edge	(estudianteCodigoEstudiante)
+			(estudiante)		edge	(estudianteMail)
+			(estudiante)		edge	(estudianteNombre)
+						
+			(perteneceA)		edge	(perteneceAAnioIngreso)
+			
+			(inhEstudiante)		edge	(estudiante)
+			(inhEstudiante)		edge	(regular)
+			(inhEstudiante)		edge	(graduado)
+			
+			(egresadoDe)		edge	(egresadoDeAnioEgreso)
+			
+			(telefono)			edge	(telefonoNumero)
+			
+			(semestre)			edge	(semestreIdSemestre)
+			(semestre)			edge	(semestreFechaInicio)
+			(semestre)			edge	(semestreFechaFin)
+			
+			(seccion)			edge	(seccionIdSeccion)
+			(seccion)			edge	(seccionNombre)
+			
+			(curso)				edge	(cursoIdCurso)
+			(curso)				edge	(cursoNombre)
+			(curso)				edge	(cursoCreditos)
+			
+			(inscriptoEn)		edge	(inscriptoEnNota)
+			%%Relaciones
+			(trabajaEn)		edge						node[right, near end]		{N}	(empleado)
+			(trabajaEn)		edge						node[right, near end]		{1}	(departamento)
+			
+			(perteneceA)	edge						node[below, near end]		{M}	(estudiante)
+			
+			(encargadoDe)	edge[out=south, in=45]	node[above left, pos=0.9] 	{1}	(departamento)
+			
+			(esDe)			edge						node[above, near end]		{1}	(empleado)
+			(esDe)			edge						node[above, near end]		{N}	(telefono)
+			
+			(egresadoDe)	edge 						node[above, near end]		{N}	(graduado)
+			
+			(dictadoPor)	edge						node[above, near end]		{N} (curso)
+			(dictadoPor)	edge						node[above, near end]		{1} (seccion)
+			
+			(seDivideEn)	edge						node[right, near end]		{1}	(departamento)
+			(seDivideEn)	edge[in=north, out=south]	node[below right, near end]		{N}	(seccion)
+		;
+		
+		\path[rightOptional]
+			(perteneceA)	edge						node[below, near end]		{N}	(departamento)
+			
+			(encargadoDe)	edge						node[right, near end] 		{1}	(docente)
+			
+			(egresadoDe)	edge[in=170, out=east] 		node[yshift=0.25cm, pos=0.95]	{M}	(departamento)
+			
+			(inscriptoEn)	edge						node[right, near end]		{N}	(estudiante)
+			(inscriptoEn)	edge						node[right, near end]		{M}	(curso)
+			(inscriptoEn)	edge[in=east, out=west]		node[above,pos=0.9]		{P}	(semestre)
+			
+			;
+		\end{tikzpicture}	
+}
+
+\end{center}
+
+\begin{multicols}{2}
+\textbf{MER}
+
+Departamento(\PK{idDpto}, nombre, \FK{codigo})
+
+Empleado(\PK{codigo}, nombre, \FK{idDpto}, tipo)
+
+Telefono(\PK{numero}, \FK{codigo})
+
+Administrativo(\FPK{codigo}, tipo)
+
+Técnico(\FPK{codigo}, nivelEstudio)
+
+Coordinador(\FPK{codigo}, email)
+
+Docente(\FPK{codigo}, email, paginaWeb, tipo)
+
+Estudiante(\PK{codEstudiante}, nombre, mail)
+
+Regular(\FPK{codEstudiante})
+
+Egresado(\FPK{codEstudiante})
+
+Curso(\PK{idCurso}, \FK{idSemestre}, \FK{seccion}, nombre)
+
+Semestre(\PK{idSemestre}, fechaInicio, fechaFin)
+
+Seccion(\PK{idSeccion}, \FPK{idDpto}, nombre)
+
+perteneceA(\FPK{codEstudiante}, \FPK{idDpto}, \PK{añoIngreso})
+
+egresadoDe(\FPK{codEstudiante}, \FPK{idDpto}, \PK{añoEgreso})
+
+inscriptoEn(\FPK{codEstudiante}, \FPK{idCurso}, \FPK{idSemestre} nota)
+
+\columnbreak
+\paragraph{Consultas}
+
+\begin{enumerate}[(a)]
+	\item Se puede filtrar de la relación \textit{inscriptoEn} las notas del alumno $A$ para cada semestre.
+	
+	\item Se puede calcular a partir de la relación \textit{inscriptoEn}, consiguiendo todas las notas del alumno.
+	
+	\item Se hace una join de \textit{inscriptoEn}, \textit{Curso}, \textit{perteneceA}, \textit{Departamento} y se pueden filtrar las entradas que correspondan al alumno y departamento deseados.
+	
+	\item Se hace un join de \textit{inscriptoEn}, \textit{Curso}, \textit{perteneceA}, \textit{Departamento}, se filtran por el alumno $A$ y se realiza una proyección del campo \textit{idDpto}.
+	
+	\item \red{¿O sea que un curso puede ser dado por varios departamentos?}
+	
+	\item Se hace un join con \textit{inscriptoEn}, \textit{Curso}, \textit{dictadoPor}, se filtra por sección y curso. Se saca un promedio del campo \textit{nota}.
+	
+	
+\end{enumerate}
+
+\paragraph{\red{Notas}}
+\begin{itemize}
+	\item \red{Falta la relación dictó}
+	\item \red{¿Los cursos pueden ser dados por varios departamentos o puedo tomarlo como cursos distintos?}
+	\item \
+\end{itemize}
+
+\end{multicols}
+
+\end{document}
