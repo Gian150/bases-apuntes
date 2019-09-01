@@ -1,199 +1,144 @@
 \section{Ejercicios introductorios}
 
 \subsection{Ejercicio 1.1}
-
 \begin{center}
-\textbf{DER}
-
-\vspace*{1cm}
-
-	\scalebox{1}{
-		\begin{tikzpicture}[.style={DER}]
-		
-		%% Entidades y relaciones
-		\node[entity]			(cliente) 							{Cliente};
-		\node[relationship] 	(tiene) 	[right=of cliente] 		{tiene};
-		\node[entity]			(vehiculo)	[right=of tiene]		{Vehiculo};
-		\node[relationship] 	(registra) 	[right=of vehiculo] 	{registra};
-		\node[entity]			(accidente)	[right=of registra]		{Accidente};
-		\node[relationship]		(cubre)		[above=of vehiculo] 	{cubre};
-		\node[entity]			(poliza)	[above=of cubre]		{Poliza};
-		\node[relationship]		(asociadaA)	[left =of poliza]		{asociada a};
-		\node[entity]			(prima)		[left =of asociadaA]	{Prima};
-		\node[weak relationship](paga)		[left =of prima]		{paga};
-		\node[weak entity]		(pago)		[left =of paga]			{Pago};
-		
-		
-		%%Atributos de Accidente
-		\node[attributePK]		(accidenteIdAccidente)		[below=of accidente]				{\PK{idAccidente}};
-		
-		%%Atributos de Cliente
-		\node[attributePK]		(clienteIdCliente)			[left=of cliente]					{\PK{idCliente}};
-				
-		%%Atributos de Pago
-		\node[attributePK]		(pagoIdPago)				[left=of pago]						{\PK{idPago}};
-		\node[attribute]		(pagoRecepcion)				[below=of pago]						{fechaRecepcion};
-		
-		%%Atributos de Poliza
-		\node[attributePK]		(polizaIdPoliza)			[right=of poliza]					{\PK{idPoliza}};
-		
-		%%Atributos de Prima
-		\node[attribute]		(primaValidaDesde)			[above=of prima] 					{validaDesde};
-		\node[attributePK]		(primaIdPrima)				[left=of primaValidaDesde] 			{\PK{idPrima}};
-		\node[attribute]		(primaVencimiento)			[right=of primaValidaDesde] 		{vencimiento};
-		
-		%%Atributos de Vehiculo
-		\node[attributePK]		(vehiculoIdVehiculo)		[below=of vehiculo]					{\PK{idVehiculo}};
-		
-		
-		%% Ejes de participación completa
-		\path
-			%% Ejes atributos Accidente
-			(accidente)	edge	(accidenteIdAccidente)
-
-			%% Ejes atributos Cliente
-			(cliente)	edge	(clienteIdCliente)
-		
-			%% Ejes atributos Pago
-			(pago)		edge	(pagoIdPago)
-			(pago)		edge	(pagoRecepcion)	
-			
-			%% Ejes atributos Poliza
-			(poliza)	edge	(polizaIdPoliza)
-			
-			%% Ejes atributos Prima
-			(prima)		edge 	(primaIdPrima)
-			(prima) 	edge	(primaValidaDesde)
-			(prima) 	edge	(primaVencimiento)
-			
-			%% Ejes atributos Vehiculo
-			(vehiculo)	edge	(vehiculoIdVehiculo)
-				
-			%% Ejes relacion tiene
-			(tiene)					edge	node[above, near end]	{1}	(cliente)
-			(tiene)					edge	node[above, near end]	{N}	(vehiculo)
-			
-			%% Ejes relacion cubre
-			(cubre)					edge	node[left, near end] 	{1} (poliza)
-			(cubre)					edge 	node[left, near end]	{N} (vehiculo)
-			
-			% Ejes relacion paga
-			(paga)					edge	node[above, near end]	{1} (prima)
-			(paga)					edge	node[above, near end]	{N}	(pago)
-
-			%% Ejes realacion asociada a
-			(asociadaA)				edge 	node[above, near end]	{1} (poliza)
-			(asociadaA)				edge 	node[above, near end]	{N}	(prima)
-			
-			%% Ejes relacion registra)
-			(registra) 				edge 	node[above, near end]	{N}	(accidente)	
-		;
+\scalebox{1}{
+	\begin{tikzpicture}[DER]
 	
-		%% Ejes de participación parcial
-		\path[rightOptional]
-			%% Ejes relación Registra
-			(registra)	edge node[above, near end]	{1}	(vehiculo)
+	%% Entidades; y relaciones
+	\node[entity]		(cliente)								{Cliente};
+	\node[relationship]	(posee)			[right=of cliente]			{posee};
+	\node[entity]		(vehiculo)		[right=of posee]		{Vehiculo};
+	\node[relationship]	(cubre)			[above=of vehiculo]	{cubre};
+	\node[entity] 		(poliza) 	[above=of cubre]		{Poliza};
+	\node[weak relationship]	(paga)		[left=of poliza]		{paga};
+	\node[weak entity]		(pago)		[left=of paga]	{Pago};
+	
+	%%Atributos
+	\node[attributePK]	(clienteIdCliente)	[left=of cliente] {\PK{idCliente}};
+
+	\node[attributePK]	(vehiculoIdVehiculo)	[right=of vehiculo] {\PK{idVehiculo}};	
+	
+	\node[attributePK]	(polizaIdPoliza)	[right=of poliza] {\PK{idPoliza}};
+	
+	\node[attributePK]  (pagoNroPago)		[above=of pago]	{\PK{nroPago}};
+	
+	\node[attribute]	(pagoFechaRecepcion)		[above left=of pago] {fechaRecepcion};
+	
+	\node[attribute]	(pagoPeriodo)		[left=of pago] {periodo};
+	
+	\node[attribute]	(pagoPeriodoInicio)		[left=of pagoPeriodo] {fechaInicio};
+	
+	\node[attribute]	(pagoPeriodoFin)		[below left=of pagoPeriodo, xshift=-0.5cm] {fechaFin};
+	
+	\node[attribute]	(pagoVencimiento)		[below left=of pago] {vencimiento};
+	
+	\path
+		(pago) 			edge (pagoNroPago)
+		(pago) 			edge (pagoFechaRecepcion)
+		(pago) 			edge (pagoPeriodo)
+		(pago) 			edge (pagoVencimiento)
+		(pagoPeriodo) 	edge (pagoPeriodoInicio)
+		(pagoPeriodo) 	edge (pagoPeriodoFin)
+		
+		(poliza)		edge (polizaIdPoliza)
+		
+		(vehiculo)		edge (vehiculoIdVehiculo)
+		
+		(cliente)		edge (clienteIdCliente)
+		
+		(paga) edge node[above, near end]{N} (pago)
+		(paga) edge node[above, near end]{1} (poliza)
+		
+		(cubre) edge node[left, near end]{N} (poliza)
+		(cubre) edge node[left, near end]{M} (vehiculo)
+		
+		(posee) edge node[above, near end]{1} (cliente)
+		(posee) edge node[above, near end]{N} (vehiculo)
 		;
-		\end{tikzpicture}
+	\end{tikzpicture}
+	
 }
-
 \vspace*{1cm}
 
+\begin{minipage}{0.5\textwidth}
 \textbf{MER}
-
-\vspace*{1cm}
-
-\begin{minipage}{0.65\textwidth}
-
-	\begin{multicols}{2}
-		Cliente		(\PK{idCliente})
 	
-		Vehiculo	(\PK{idVehiculo}, \FK{idCliente}, \FK{idPoliza})
-		
-		Accidente	(\PK{idAccidente}, \FK{idVehiculo})
-		
-		Poliza		(\PK{idPoliza})
-		
-		Prima		(\PK{idPrima}, validaDesde, vencimiento, \FK{idPoliza})
-
-		Pago		(\PK{idPago}, \FPK{idPrima}, fechaRecepcion, cantidad)
-	\end{multicols}
+	Cliente		(\PK{idCliente})
+	
+	Vehiculo	(\PK{idVehiculo}, \FK{idCliente}, \FK{idPoliza})
+	
+	Accidente	(\PK{idAccidente}, \FK{idVehiculo})
+	
+	Poliza		(\PK{idPoliza})
+	
+	Pago		(\FPK{idPoliza}, \PK{nroPago}, fechaRecepcion, fechaInicio, fechaFin, vencimiento)
+	
 \end{minipage}
+
 \end{center}
 
 \newpage
+
 \subsection{Ejercicio 1.2}
-
 \begin{center}
-\textbf{DER}
+	\scalebox{1}{
+		\begin{tikzpicture}[DER]
+		
+		%% Entidades; y relaciones
+		\node[entity] 		(cliente)							{Cliente};
+		\node[relationship] (compro)		[right=of cliente]	{compró};
+		\node[entity]		(producto)		[right=of compro]	{Producto};
+		\node[relationship]	(provee)		[above=of producto] {provee};
+		\node[entity]		(proveedor)		[above=of provee]	{Proveedor};
+		
+		
+		\node[attributePK] (clienteDni)		[above=of cliente]  {\PK{dni}};
+		\node[attributeM]  (clienteNombres)	[above left=of cliente]  {nombres};
+		\node[attributeM]  (clienteApellidos)	[left=of cliente]  {apellidos};
+		\node[attribute]  (clienteDireccion)	[below left=of cliente]  {dirección};
+		\node[attribute]  (clienteNacimiento)	[below=of cliente]  {nacimiento};
+		
+		\node[attributePK] (productoCodigo)		[above right=of producto] {\PK{código}};
+		\node[attribute] (productoNombre)		[right=of producto] {código};
+		\node[attribute] (productoPrecio)	[below right=of producto] {precio};
+		
+		\node[attributePK] (proveedorCuit)		[above left=of proveedor] {\PK{cuit}};
+		\node[attribute] (proveedorNombre)		[above=of proveedor] {nombre};
+		\node[attribute] (proveedorDireccion)	[above right=of proveedor] {dirección};
+		\path
+			(cliente) edge	(clienteDni)
+			(cliente) edge	(clienteNombres)
+			(cliente) edge	(clienteApellidos)
+			(cliente) edge	(clienteDireccion)
+			(cliente) edge  (clienteNacimiento)
+			
+			(producto) edge	(productoCodigo)
+			(producto) edge (productoNombre)
+			(producto) edge	(productoPrecio)
+			
+			(proveedor) edge	(proveedorCuit)
+			(proveedor) edge	(proveedorNombre)
+			(proveedor) edge	(proveedorDireccion)
+			(compro) edge node[above, near end]{N}	(cliente)
+			(compro) edge node[above, near end]{M}	(producto)
+			
+			(provee) edge node[left, near end] {1}	(proveedor)
+			(provee) edge node[left, near end] {N}	(producto)
+		;
+		\end{tikzpicture}
+		
+	}
+	\vspace*{1cm}
+	
+	\begin{minipage}{0.5\textwidth}
+		\textbf{MER}
 
-\vspace*{1cm}
+Cliente		(\PK{dni}, direccion, nacimiento)
 
-\scalebox{1}{
-	\begin{tikzpicture}[.style={DER}]
-	
-	%% Entidades y relaciones
-	\node[entity]			(cliente) 										{Cliente};
-	\node[relationship] 	(compro)			[right=of cliente] 			{compró};
-	\node[entity]			(producto)			[right=of compro]			{Producto};
-	\node[relationship] 	(suministradoPor)	[right=of producto] 		{suministrado \\ por};
-	\node[entity]			(proovedor)			[right=of suministradoPor]	{Proovedor};
-	
-	%%Atributos de Cliente
-	\node[attribute]	(clienteApellido)			[left=of cliente]					{apellido};
-	\node[attribute]	(clienteNombre)				[above=of clienteApellido]			{nombre};
-	\node[attributePK]	(clienteDni)			 	[above right=of clienteNombre]		{\PK{dni}};
-	\node[attribute]	(clienteDireccion)		 	[below=of clienteApellido]			{direccion};
-	\node[attribute]	(clienteFechaNacimiento)	[below right=of clienteDireccion] 	{fechaNacimiento};
-	
-	%%Atributos Producto
-	\node[]				(productoI)					[above=of producto] 				{};  %% Auxiliar
-	\node[attribute]	(productoNombre)			[above=of productoI]				{nombre};
-	\node[attributePK]	(productoCodigo)			[left=of productoNombre]			{\PK{codigo}};
-	\node[attribute]	(productoPrecio)			[right=of productoNombre]			{precio};
-	
-	%%Atributos Proovedor
-	\node[attribute]	(proovedorNombre)			[right=of proovedor]				{nombre};
-	\node[attributePK]	(proovedorCuit)				[above=of proovedorNombre]			{\PK{cuit}};
-	\node[attribute]	(proovedorDireccion)		[below=of proovedorNombre]			{direccion};
-	
-	%% Ejes de participación completa
-	\path
-	%% Ejes atributos Cliente	
-	(cliente)	edge	(clienteDni)
-	(cliente)	edge	(clienteNombre)
-	(cliente)	edge	(clienteApellido)
-	(cliente)	edge	(clienteDireccion)
-	(cliente)	edge	(clienteFechaNacimiento)
-	
-	%% Ejes atributos Producto
-	(producto)	edge	(productoCodigo)
-	(producto)	edge	(productoNombre)
-	(producto)	edge	(productoPrecio)	
-	
-	%% Ejes atributos Proovdor
-	(proovedor)	edge	(proovedorCuit)
-	(proovedor)	edge	(proovedorNombre)
-	(proovedor)	edge	(proovedorDireccion)	
+Nombre		(\FPK{dni}, \PK{nombre})
 
-	%% Ejes relacion tiene
-	(compro)	edge			node[above, near end]	{N}	(cliente)
-	(compro)	edge			node[above, near end]	{M}	(producto)
-	
-	%% Ejes relacion suministrado por
-	(suministradoPor)	edge	node[above, near end]	{N}	(producto)
-	(suministradoPor)	edge	node[above, near end]	{1}	(proovedor)
-	;
-	\end{tikzpicture}
-}
-
-\vspace*{1cm}
-
-\textbf{MER}
-
-\vspace*{1cm}
-\begin{minipage}{0.30\textwidth}
-Cliente		(\PK{dni}, nombre, apellido, direccion, nacimiento)
+Apellido	(\FPK{dni}, \PK{apellido})
 
 Producto	(\PK{codigo}, nombre, precio, \FK{cuit})
 
@@ -201,8 +146,9 @@ Proovedor	(\PK{cuit}, nombre, direccion)
 
 compro		(\FPK{dni}, \FPK{codigo})
 
-\end{minipage}
-
+		
+	\end{minipage}
+	
 \end{center}
 
 \newpage
@@ -219,10 +165,15 @@ compro		(\FPK{dni}, \FPK{codigo})
 		\node[entity]		(paquete)								{Paquete};
 		\node[relationship]	(transporta)	[left=of paquete]		{transporta};
 		\node[entity]		(camionero)		[left=of transporta]	{Camionero};
-		\node[relationship]	(llegaA)		[right=of paquete]		{llega a};
-		\node[entity] 		(provincia) 	[right=of llegaA]		{Provincia};
+		\node[relationship]	(enviadoA)		[below=of paquete]		{enviado a};
+		\node[weak entity]		(direccion)		[below=of enviadoA]		{direccion};
+		\node[weak relationship]	(perteneceA)	[below=of direccion]	{pertenece a};			
+		\node[entity] 		(provincia) 	[below=of perteneceA]		{Provincia};
 		\node[relationship]	(conducidoPor)	[left=of camionero]		{conducido por};
 		\node[entity]		(camion)		[left=of conducidoPor]	{Camion};
+		\node[relationship]	(es)			[below=of camion]		{es};
+		\node[entity]		(modelo)		[below=of es]			{Modelo};
+		\node[relationship]	(viveEn)		[left= of direccion]	{vive en};
 		
 		%% Atributos Camion
 		\node[]				(camionI)			[below=of camion]				{}; %%Auxiliar
@@ -230,10 +181,7 @@ compro		(\FPK{dni}, \FPK{codigo})
 		\node[]				(camionIII)			[below=of camionII]				{}; %%Auxiliar
 		
 		\node[attributePK]	(camionMatricula)	[above=of camion]				{\PK{matricula}};
-		\node[attribute]	(camionModelo)		[above left=of camion]			{modelo};
-		\node[attribute]	(camionTipo)		[left=of camion]				{tipo};
-		\node[attribute]	(camionPotencia)	[below left =of camion]			{potencia};
-
+		
 		%% Atributos camionero
 		\node[]				(camioneroI)			[below=of camionero]		{};
 		\node[]				(camioneroII)			[below=of camioneroI]		{};
@@ -242,50 +190,59 @@ compro		(\FPK{dni}, \FPK{codigo})
 		\node[attribute]	(camioneroNombre)		[right=of camioneroDni]		{nombre};
 		\node[attribute]	(camioneroApellido)		[left=of camioneroI]		{apellido};
 		\node[attribute]	(camioneroTelefono)		[right=of camioneroI]		{telefono};
-		\node[attribute]	(camioneroDireccion)	[below left=of camioneroI]	{direccion};
-		\node[attribute]	(camioneroSalario)		[below right=of camioneroI]	{salario};
-		\node[attribute]	(camioneroPoblacion)	[below=of camioneroII]		{poblacion};
+		\node[attribute]	(camioneroSalario)		[below left=of camioneroI]	{salario};
 		
 		%% Atributos Paquete
-		\node[]				(paqueteI)				[below=of paquete]			{};			
 		\node[attributePK]	(paqueteCodigo)			[above=of paquete]			{\PK{codigo}};
-		\node[attribute]	(paqueteDestinatario)	[below left=of paqueteI]	{destinatario};
-		\node[attribute]	(paqueteDescripcion)	[above right=of paquete]	{descripcion};
-		\node[attribute]	(paqueteDireccionEnvio)	[below right=of paqueteI]	{direccionEnvio};
+		\node[attribute]	(paqueteDestinatario)	[above right=of paquete]	{destinatario};
+		\node[attribute]	(paqueteDescripcion)	[right=of paquete]	{descripcion};
 
 		%% Atributos provincia		
-		\node[attributePK]	(provinciaCodigoProvincia)	[above right=of provincia]		{\PK{codigoProvincia}};
+		\node[attributePK]	(provinciaCodigoProvincia)	[right=of provincia]		{\PK{codigoProv}};
 		\node[attribute]	(provinciaNombre)			[below right=of provincia]		{nombre};
 		
+		\node[attributePK]	(direccionNro)	[above right=of direccion]		{\PK{numero}};
+		\node[attributePK]	(direccionCalle)	[right=of direccion]		{\PK{calle}};
+		\node[attributePK]	(direccionLocalidad)	[below right=of direccion]		{\PK{localidad}};
 		%%Atributos conducido por
 		\node[attributePK]	(conducidoPorFecha)	[above=of conducidoPor]		{\PK{fecha}};
 		
+		%%
+		
+		\node[attributePK]	(modeloNombre)	[left=of modelo]	{\PK{nombreModelo}};
+		\node[attributePK]	(modeloMarca)	[below left=of modelo]	{\PK{marca}};
+		\node[attribute]	(modeloTipo)	[below=of modelo]	{tipo};
+		\node[attribute]	(modeloPotencia)[below right=of modelo]	{potencia};
 		
 		\path
 			%% Atributos camion
 			(camion)	edge  	(camionMatricula)
-			(camion)	edge	(camionModelo)
-			(camion)	edge  	(camionTipo)
-			(camion)	edge 	(camionPotencia)
-			
+
 			%% Atributos camionero
 			(camionero)	edge	(camioneroDni)
 			(camionero)	edge	(camioneroNombre)
 			(camionero) edge 	(camioneroApellido)	
 			(camionero) edge 	(camioneroTelefono)
-			(camionero) edge 	(camioneroDireccion.45)	
-			(camionero) edge 	(camioneroSalario.135)
-			(camionero) edge	(camioneroPoblacion)
+			(camionero) edge 	(camioneroSalario.45)
 			
 			%% Atributos de paquete
 			(paquete)	edge	(paqueteCodigo)
 			(paquete)	edge	(paqueteDescripcion)
 			(paquete)	edge	(paqueteDestinatario)
-			(paquete)	edge	(paqueteDireccionEnvio)
 			
+			
+			%%
+			(direccion)	edge	(direccionNro)
+			(direccion)	edge	(direccionCalle)
+			(direccion)	edge	(direccionLocalidad)
 			%% Atributos de provincia
 			(provincia)	edge	(provinciaCodigoProvincia)
 			(provincia)	edge	(provinciaNombre)
+			
+			(modelo)	edge	(modeloNombre)
+			(modelo)	edge	(modeloMarca)
+			(modelo)	edge	(modeloTipo)
+			(modelo)	edge	(modeloPotencia)
 			
 			%% Relacion conducidoPor
 			(conducidoPor)	edge 	node[above, near end]	{N} (camion)
@@ -297,31 +254,39 @@ compro		(\FPK{dni}, \FPK{codigo})
 			(transporta)	edge	node[above, near end] 	{1} (camionero)
 			
 			%% Relacion llega
-			(llegaA)		edge	node[above, near end]	{N}	(paquete)
-			(llegaA)		edge	node[above, near end]	{1}	(provincia)
+			(enviadoA)		edge	node[left, near end]	{N}	(paquete)
+			(enviadoA)		edge	node[left, near end]	{1}	(direccion)
+			
+			(perteneceA)	edge	node[left, near end]	{N}	(direccion)
+			(perteneceA)	edge	node[left, near end]	{1}	(provincia)
+			
+			(es)			edge	node[left, near end]	{N}	(camion)
+			(es)			edge	node[left, near end]	{1} (modelo)
+			
+			(viveEn)	edge[in=south, out=west]	node[right, pos=0.9]	{N}	(camionero)
+			(viveEn)	edge	node[above, near end]	{1}	(direccion)	
 			;	
 		\end{tikzpicture}
 		
 }
-
-\vspace*{1cm}
-
+\end{center}
+\newpage
 \textbf{MER}
 
-\vspace{1cm}
-\begin{minipage}{0.485\textwidth}
-	Camion	(\PK{matricula}, modelo, tipo, potencia)
+Camion	(\PK{matricula}, \FK{nombreModelo, marca})
+
+Modelo (\PK{nombre}, \PK{marca}, tipo, potencia)
+
+Camionero	(\PK{dni}, nombre, apellido, telefono, , salario, \FK{numero, calle, localidad, codigoProv})
 	
-	Camionero	(\PK{dni}, nombre, apellido, telefono, direccionEnvio, salario, poblacion)
+Paquete	(\PK{codigo}, descripcion, destinatario, \FK{numero, calle, localidad, codigoProv}, \FK{dni})
 	
-	Paquete	(\PK{codigo}, descripcion, destinatario, direccionDestinatario, \FK{dni}, \FK{codigoProvincia})
+Direccion(\PK{numero}, \PK{calle}, \PK{localidad}, \FPK{codigoProv})
+
+Provincia (\PK{codigoProvincia}, nombre)
 	
-	Provincia (\PK{codigoProvincia}, nombre)
-	
-	compro(\FPK{matricula}, \FPK{dni}, \PK{fecha})
-	
-\end{minipage}
-\end{center}
+conducidoPor(\FPK{matricula}, \FPK{dni}, \PK{fecha})
+
 
 \newpage
 \subsection{Ejercicio 1.4}
@@ -376,24 +341,27 @@ compro		(\FPK{dni}, \FPK{codigo})
 			\end{tikzpicture}
 			
 		}
-	
-	\vspace*{1cm}
-	
-	\textbf{MER}
-	\vspace*{1cm}
-	
-	\begin{minipage}{0.239\textwidth}
-		Examen	(\PK{idExamen}, fecha, nota)
-		
-		Curso	(\PK{idCurso}, nombre)
-		
-		Alumno	(\PK{idAlumno}, nombre, apellido)
-		
-		califica a(\FPK{idAlumno}, \FPK{idExamen}, \FK{idCurso})
-			
-	\end{minipage}
+
 \end{center}
 
+\vspace*{1cm}
+\begin{multicols}{2}
+		
+	\textbf{MER}
+	
+	Examen	(\PK{idExamen}, fecha, nota)
+	
+	Curso	(\PK{idCurso}, nombre)
+	
+	Alumno	(\PK{idAlumno}, nombre, apellido)
+	
+	califica a(\FPK{idAlumno}, \FPK{idExamen}, \FK{idCurso})
+	
+	\columnbreak
+	
+	\paragraph{Nota:} Este modelo permite que una materia tome más de un parcial a un alumno en la misma fecha. ¿Como arreglaría esto?.
+
+\end{multicols}
 \newpage
 \subsubsection*{b)}
 	\begin{center}
@@ -438,21 +406,24 @@ compro		(\FPK{dni}, \FPK{codigo})
 			\end{tikzpicture}
 			
 		}
+
+\end{center}
 	
 	\vspace*{1cm}
-	
-			\textbf{MER}
-	\vspace*{1cm}
-	
-		\begin{minipage}{0.227\textwidth}
-			Examen	(\PK{idExamen}, fecha, nota)
-			
-			Curso	(\PK{idCurso}, nombre)
-			
-			califica a(\FPK{idAlumno}, \FPK{idCurso}, \PK{fecha}, nota)
-			
-		\end{minipage}
-	\end{center}
+
+\begin{multicols}{2}
+	\textbf{MER}
+
+Examen	(\PK{idExamen}, fecha, nota)
+
+Curso	(\PK{idCurso}, nombre)
+
+califica a(\FPK{idAlumno}, \FPK{idCurso}, \PK{fecha}, nota)
+
+\columnbreak
+
+\paragraph{Nota:} Este modelo soluciona el problema del anterior. Ahora una materia solo puede tomar un exámen por fecha a cada alumno.
+\end{multicols}
 
 \newpage
 \subsection{Ejercicio 1.5}
