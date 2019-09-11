@@ -15,11 +15,24 @@
 	column sep=1cm
 ]
 
+\tikzstyle{agregacion} = [
+rectangle,
+draw=blue!70!black!80,
+align=left,
+color=blue!50!black!100,
+text=black,
+very thick, 
+minimum width=6em, 
+minimum height=3em
+]
+
 \tikzstyle{entity} = [
 	rectangle,
 	draw=blue!70!black!80,
 	align=left,
-	color=blue!50!black!100, 
+	color=blue!50!black!100,
+	text=black,
+	fill=blue!15!white!100, 
 	very thick, 
 	minimum width=6em, 
 	minimum height=3em
@@ -36,6 +49,8 @@
 	align=center,
 	draw=red!80,
 	color=red!80!black!150,
+	text=black,
+	fill=red!15!white!100,
 	very thick,
 	minimum width=2em,	
 	aspect=2
@@ -61,7 +76,9 @@
 
 \tikzstyle{attributePK} = [
 	attribute,
-	draw=orange!80!black!100
+	draw=orange!80!black!100,
+	fill=orange!15!white!100,
+	text=black
 ]
 
 \tikzstyle{attributeM} = [
